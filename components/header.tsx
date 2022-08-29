@@ -48,6 +48,11 @@ export default function Header() {
         setAnchorElUser(null);
     };
 
+    const handleMakoBtn = () =>
+    {
+        route.push("/");
+    }
+
     return (
         <header>
             <noscript>
@@ -59,7 +64,7 @@ export default function Header() {
                     <AppBar position="static" sx={{ paddingRight: "10%", paddingLeft: "10%", backgroundColor: 'transparent' }}>
                         <Toolbar>
                             <Box sx={{ flexGrow: 1 }}>
-                                <Button color="inherit" variant="outlined" >
+                                <Button color="inherit" variant="outlined" onClick={handleMakoBtn} >
                                     <Typography variant="h6" color="inherit">
                                         Mako Bot
                                     </Typography>

@@ -21,6 +21,7 @@ export default async function handler(
 ) {
   var token: any = await getToken({ req });
   var { accessToken } = token;
+  console.log(token);
   var config = {
       method: 'get',
       url: 'https://discord.com/api/v10/users/@me/guilds',

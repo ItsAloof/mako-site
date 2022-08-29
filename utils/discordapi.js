@@ -28,3 +28,23 @@ export async function getGuilds(token) {
 export function getGuildIcon(id, icon) {
     return `${iconURI}/${id}/${icon}.png`
 }
+
+export async function botInDiscord() {
+    var config = {
+        method: 'get',
+        url: `https://discord.com/api/v10/guilds/`,
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    };
+    var data;
+    await axios(config)
+    .then(function (response)
+    {
+        data =  response.data;
+    }).catch(function (error){
+        console.log(error)
+    }
+    );
+    return data;
+}

@@ -1,4 +1,4 @@
-import { Card, CardMedia, Grid, Typography } from "@mui/material";
+import { Backdrop, Card, CardMedia, CircularProgress, Grid, Paper, Typography } from "@mui/material";
 import { getToken } from "next-auth/jwt";
 import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react"
@@ -8,23 +8,21 @@ import Layout from "../components/layout";
 
 var requested = false
 
-function hasPermission(permission, owner)
-{
-    if(owner)
-    {
+function hasPermission(permission, owner) {
+    if (owner) {
         return true;
     }
     console.log(permission)
     var perms = BigInt(permission)
     var perm = BigInt("0x20")
-    if((perms & perm) == perm)
-    {
+    if ((perms & perm) == perm) {
         return true;
     }
 }
 
 export default function GuildList() {
     const [guilds, setGuilds] = useState();
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -32,10 +30,10 @@ export default function GuildList() {
             var res = await fetch("/api/guilds");
             var data = await res.json();
             setGuilds(data);
+            setLoading(false);
         }
         console.log("Sending fetch request...")
-        if(!requested)
-        {
+        if (!requested) {
             fetchData();
         }
 
@@ -44,19 +42,31 @@ export default function GuildList() {
 
     return guilds ? (
         <Layout>
-            <Grid container spacing={10} sx={{ padding: "10em" }}>
-                {guilds.map((guild) => 
-                hasPermission(guild.permissions, guild.owner) ? 
-                (
-                <Grid item key={guild.id}>
-                    <GuildItem guild={guild} />
+            <Paper square style={{ backgroundColor: "#262626", paddingTop: "1em" }}>
+                <Grid container spacing={10} sx={{ padding: "10em" }}>
+                    {guilds.map((guild) =>
+                        hasPermission(guild.permissions, guild.owner) ?
+                            (
+                                <Grid item key={guild.id}>
+                                    <GuildItem guild={guild} />
+                                </Grid>
+                            )
+                            :
+                            (<></>)
+                    )}
                 </Grid>
-                )
-                :
-                (<></>)
-                )}
-            </Grid>
+            </Paper>
             {/* <GuildList guilds={guilds} /> */}
         </Layout>
-    ) : <Layout><p>Loading...</p></Layout>
+    )
+        :
+        (
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+            >
+                <CircularProgress color="inherit" />
+            </Backdrop>
+        )
+
 }
